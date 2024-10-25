@@ -4,6 +4,8 @@
 
 #include <nlohmann/json.hpp>
 
+#include "BusData.h"
+
 void to_json(json& j, const Stop& stop) {
     j = json::object();  // Initialize as JSON object
     j["id"] = stop.id;
@@ -28,6 +30,95 @@ void to_json(json& j, const PublicTransport& transport) {
     j = json::object();  // Initialize as JSON object
     j["name"] = transport.name;
     j["stops"] = transport.stops;
+}
+
+void to_json(json& j, const BusData& bd) {
+    j = json::object();  // Initialize as JSON object
+    j["name"] = bd.name;
+    j["positions"] = bd.positions;
+}
+
+
+#include "DataUpdater.h"
+#include <stdexcept>
+
+DataUpdater::DataUpdater(ShapeManager& sm_, TripManager& tm_)
+    : sm(sm_)
+    , tm(tm_)
+    , running(true)
+    , forceUpdate(false)
+    , updateInterval(std::chrono::minutes(1))
+{
+    curl_global_init(CURL_GLOBAL_DEFAULT);
+    // Start the update thread
+    updateThread = std::thread(&DataUpdater::updateLoop, this);
+}
+
+DataUpdater::~DataUpdater() {
+    stop();
+    curl_global_cleanup();
+}
+
+void DataUpdater::stop() {
+    running = false;
+    cv.notify_one();
+    if (updateThread.joinable()) {
+        updateThread.join();
+    }
+}
+
+std::vector<PublicTransport> DataUpdater::getCurrentData() {
+    std::lock_guard<std::mutex> lock(dataMutex);
+    return currentData;
+}
+
+void DataUpdater::triggerUpdate() {
+    forceUpdate = true;
+    cv.notify_one();
+}
+
+void DataUpdater::setUpdateInterval(std::chrono::minutes newInterval) {
+    updateInterval = newInterval;
+    cv.notify_one();
+}
+
+void DataUpdater::updateLoop() {
+    while (running) {
+        try {
+            auto start = std::chrono::system_clock::now();
+            // Perform update
+            std::vector<PublicTransport> newData = updateData();
+
+            // Update the stored data thread-safely
+            {
+                std::lock_guard<std::mutex> lock(dataMutex);
+                currentData = std::move(newData);
+                lastUpdateTime = std::chrono::system_clock::now();
+            }
+
+            auto end = std::chrono::system_clock::now();
+
+            std::chrono::duration<double> elapsed_seconds = end-start;
+            std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+
+            std::cerr << "update took time: " << elapsed_seconds.count() << "s"
+                      << std::endl;
+        }
+        catch (const std::exception& e) {
+            // Handle any errors during update
+            // You might want to log this or handle it appropriately
+        }
+
+        // Wait for the next update interval or forced update
+        std::unique_lock<std::mutex> lock(dataMutex);
+        cv.wait_for(lock, updateInterval, [this]() {
+            return !running || forceUpdate;
+        });
+
+        if (forceUpdate) {
+            forceUpdate = false;
+        }
+    }
 }
 
 size_t DataUpdater::WriteCallback(void* contents, size_t size, size_t nmemb, std::string* userp) {
@@ -92,7 +183,7 @@ std::vector<PublicTransport> DataUpdater::updateData() {
 
     // Process stop events
     for (const auto& event : dmr["stopEvents"]) {
-        std::cout << "Processing Line " << event["transportation"]["number"] << std::endl;
+        std::cerr << "Processing Line " << event["transportation"]["number"] << std::endl;
 
         auto shapeId = tm.findShapeId(
             event["transportation"]["number"],
@@ -209,5 +300,10 @@ std::vector<Stop> DataUpdater::toStopList(const json& locations, const std::stri
 
 void printJson(const std::vector<PublicTransport>& transports) {
     json j = transports;
+    std::cout << j.dump(4) << std::endl;
+}
+
+void printBusJson(const std::vector<BusData>& busses) {
+    json j = busses;
     std::cout << j.dump(4) << std::endl;
 }
