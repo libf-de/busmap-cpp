@@ -119,19 +119,19 @@ std::vector<PublicTransport> DataUpdater::updateData() {
             id = id.substr(id.find_last_of(':') + 1);
 
             // Handle arrival time
-            std::optional<std::string> arrival = std::nullopt;
+            std::optional<time_t> arrival = std::nullopt;
             if (event.contains("arrivalTimeEstimated") && !event["arrivalTimeEstimated"].is_null()) {
-                arrival = event["arrivalTimeEstimated"].get<std::string>();
+                arrival = convertISOToTimeT(event["arrivalTimeEstimated"].get<std::string>());
             } else if (event.contains("arrivalTimePlanned") && !event["arrivalTimePlanned"].is_null()) {
-                arrival = event["arrivalTimePlanned"].get<std::string>();
+                arrival = convertISOToTimeT(event["arrivalTimePlanned"].get<std::string>());
             }
 
             // Handle departure time
-            std::optional<std::string> departure = std::nullopt;
+            std::optional<time_t> departure = std::nullopt;
             if (event.contains("departureTimeEstimated") && !event["departureTimeEstimated"].is_null()) {
-                departure = event["departureTimeEstimated"].get<std::string>();
+                departure = convertISOToTimeT(event["departureTimeEstimated"].get<std::string>());
             } else if (event.contains("departureTimePlanned") && !event["departureTimePlanned"].is_null()) {
-                departure = event["departureTimePlanned"].get<std::string>();
+                departure = convertISOToTimeT(event["departureTimePlanned"].get<std::string>());
             }
 
             double perc = sm.getPercentageDistance(
@@ -179,19 +179,19 @@ std::vector<Stop> DataUpdater::toStopList(const json& locations, const std::stri
         id = id.substr(id.find_last_of(':') + 1);
 
         // Handle arrival time
-        std::optional<std::string> arrival = std::nullopt;
+        std::optional<time_t> arrival = std::nullopt;
         if (loc.contains("arrivalTimeEstimated") && !loc["arrivalTimeEstimated"].is_null()) {
-            arrival = loc["arrivalTimeEstimated"].get<std::string>();
+            arrival = convertISOToTimeT(loc["arrivalTimeEstimated"].get<std::string>());
         } else if (loc.contains("arrivalTimePlanned") && !loc["arrivalTimePlanned"].is_null()) {
-            arrival = loc["arrivalTimePlanned"].get<std::string>();
+            arrival = convertISOToTimeT(loc["arrivalTimePlanned"].get<std::string>());
         }
 
         // Handle departure time
-        std::optional<std::string> departure = std::nullopt;
+        std::optional<time_t> departure = std::nullopt;
         if (loc.contains("departureTimeEstimated") && !loc["departureTimeEstimated"].is_null()) {
-            departure = loc["departureTimeEstimated"].get<std::string>();
+            departure = convertISOToTimeT(loc["departureTimeEstimated"].get<std::string>());
         } else if (loc.contains("departureTimePlanned") && !loc["departureTimePlanned"].is_null()) {
-            departure = loc["departureTimePlanned"].get<std::string>();
+            departure = convertISOToTimeT(loc["departureTimePlanned"].get<std::string>());
         }
 
         if (!loc.contains("coord") || !loc["coord"].is_array() || loc["coord"].size() < 2) continue;

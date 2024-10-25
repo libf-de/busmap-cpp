@@ -11,7 +11,6 @@ add_executable(cpp main.cpp
         ShapeManager.cpp
         ShapeManager.h
         PublicTransport.h
-        PublicTransport.cpp
         TripManager.cpp
         TripManager.h
         DataUpdater.cpp

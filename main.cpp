@@ -8,9 +8,6 @@
 #include "TripManager.h"
 #include "nlohmann/json.hpp"
 
-
-using json = nlohmann::json;
-
 ShapeManager sm("shapes.txt");
 TripManager tm("trips.txt");
 DataUpdater updater(sm, tm);

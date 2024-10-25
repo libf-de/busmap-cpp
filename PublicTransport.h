@@ -5,13 +5,13 @@
 
 struct Stop {
     std::string id;
-    std::optional<std::string> arrival;
-    std::optional<std::string> departure;
+    std::optional<time_t> arrival;
+    std::optional<time_t> departure;
     double perc;
 
     Stop(std::string id_,
-         std::optional<std::string> arrival_,
-         std::optional<std::string> departure_,
+         std::optional<time_t> arrival_,
+         std::optional<time_t> departure_,
          double perc_)
         : id(std::move(id_))
         , arrival(std::move(arrival_))
