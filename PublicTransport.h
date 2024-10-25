@@ -22,7 +22,17 @@ struct Stop {
 
 struct PublicTransport {
     std::string name;
+    std::string originId;
+    uint32_t lineColor{};
     std::vector<Stop> stops;
 
-    PublicTransport(std::string name_, std::vector<Stop> stops_) : name(std::move(name_)), stops(std::move(stops_)) {}
+    PublicTransport(std::string name_, std::vector<Stop> stops_):
+        name(std::move(name_)),
+        stops(std::move(stops_)) {}
+
+    PublicTransport(std::string name_, std::string originId_, uint32_t lineColor_, std::vector<Stop> stops_):
+        name(std::move(name_)),
+        originId(std::move(originId_)),
+        lineColor(lineColor_),
+        stops(std::move(stops_)) {}
 };

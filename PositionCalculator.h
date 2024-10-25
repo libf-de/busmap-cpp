@@ -13,6 +13,9 @@
 class PositionCalculator {
     public:
         static std::vector<BusData> calculatePositions(const std::vector<PublicTransport>& inputData);
+    private:
+        static std::string getLineId(const PublicTransport& pt);
+
 };
 
 #endif //POSITIONCALCULATOR_H

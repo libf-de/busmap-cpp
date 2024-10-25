@@ -18,7 +18,11 @@ add_executable(cpp main.cpp
         DataUpdater.h
         BusData.h
         PositionCalculator.cpp
-        PositionCalculator.h)
+        PositionCalculator.h
+        LedManager.cpp
+        LedManager.h
+        RouteManager.cpp
+        RouteManager.h)
 
 include_directories(${CURL_INCLUDE_DIR})
 #include_directories(rpi_ws281x)

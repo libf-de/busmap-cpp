@@ -5,6 +5,7 @@
 #include <nlohmann/json.hpp>
 
 #include "BusData.h"
+#include "LedManager.h"
 
 void to_json(json& j, const Stop& stop) {
     j = json::object();  // Initialize as JSON object
@@ -29,12 +30,16 @@ void to_json(json& j, const Stop& stop) {
 void to_json(json& j, const PublicTransport& transport) {
     j = json::object();  // Initialize as JSON object
     j["name"] = transport.name;
+    j["originId"] = transport.originId;
+    j["lineColor"] = LedManager::colorToHex(transport.lineColor);
     j["stops"] = transport.stops;
 }
 
 void to_json(json& j, const BusData& bd) {
     j = json::object();  // Initialize as JSON object
     j["name"] = bd.name;
+    j["originId"] = bd.originId;
+    j["lineColor"] = LedManager::colorToHex(bd.lineColor);
     j["positions"] = bd.positions;
 }
 
@@ -42,9 +47,10 @@ void to_json(json& j, const BusData& bd) {
 #include "DataUpdater.h"
 #include <stdexcept>
 
-DataUpdater::DataUpdater(ShapeManager& sm_, TripManager& tm_)
+DataUpdater::DataUpdater(ShapeManager& sm_, TripManager& tm_, RouteManager& rm_)
     : sm(sm_)
     , tm(tm_)
+    , rm(rm_)
     , running(true)
     , forceUpdate(false)
     , updateInterval(std::chrono::minutes(1))
@@ -239,8 +245,17 @@ std::vector<PublicTransport> DataUpdater::updateData() {
         allStops.insert(allStops.end(), thisStop.begin(), thisStop.end());
         allStops.insert(allStops.end(), nextStops.begin(), nextStops.end());
 
+        std::string originId;
+        if(event["transportation"]["origin"].contains("id")) {
+            originId = event["transportation"]["origin"]["id"].get<std::string>();
+        }
+
+        auto name = event["transportation"]["number"].get<std::string>();
+
         result.emplace_back(
-            event["transportation"]["number"].get<std::string>(),
+            name,
+            std::move(originId),
+            rm.getRouteColor(name),
             std::move(allStops)
         );
     }

@@ -12,12 +12,13 @@
 #include <condition_variable>
 
 #include "BusData.h"
+#include "RouteManager.h"
 
 using json = nlohmann::json;
 
 class DataUpdater {
 public:
-    DataUpdater(ShapeManager& sm_, TripManager& tm_);
+    DataUpdater(ShapeManager& sm_, TripManager& tm_, RouteManager& rm_);
     ~DataUpdater();
 
     // Stop the update thread
@@ -35,6 +36,7 @@ public:
 private:
     ShapeManager& sm;
     TripManager& tm;
+    RouteManager& rm;
 
     // Thread-related members
     std::thread updateThread;

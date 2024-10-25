@@ -11,7 +11,8 @@
 
 ShapeManager sm("shapes.txt");
 TripManager tm("trips.txt");
-DataUpdater updater(sm, tm);
+RouteManager rm("routes.txt");
+DataUpdater updater(sm, tm, rm);
 
 int main() {
     // Your main program loop

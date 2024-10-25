@@ -3,6 +3,8 @@
 //
 
 #include "PositionCalculator.h"
+#include <ctime>
+#include <algorithm>
 
 std::vector<BusData> PositionCalculator::calculatePositions(const std::vector<PublicTransport>& inputData) {
     std::vector<BusData> positions;
@@ -10,10 +12,12 @@ std::vector<BusData> PositionCalculator::calculatePositions(const std::vector<Pu
 
     for (auto lineData: inputData) {
         auto existingData = std::find_if(positions.begin(), positions.end(), [&lineData](BusData& busData) {
-            return lineData.name == busData.name;
+            return lineData.name == busData.name && lineData.originId == busData.originId;
         });
 
-        BusData& busDataRef = (existingData != positions.end()) ? *existingData : positions.emplace_back(lineData.name, std::vector<double>());
+        BusData& busDataRef = (existingData != positions.end())
+                ? *existingData
+                : positions.emplace_back(lineData.name, lineData.originId, lineData.lineColor, std::vector<double>());
         std::optional<double> busPosition = std::nullopt;
 
         for (int i = 0; i < lineData.stops.size() - 1; ++i) {

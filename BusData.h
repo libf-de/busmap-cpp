@@ -8,11 +8,14 @@
 
 struct BusData {
     std::string name;
+    std::string originId;
+    uint32_t lineColor;
     std::vector<double> positions;
 };
 
 struct LedData {
     std::string lineName;
+    std::string originId;
     std::vector<int> ledIndices;
 };
 
