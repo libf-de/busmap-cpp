@@ -4,7 +4,7 @@ project(cpp)
 find_package(CURL REQUIRED)
 set(JSON_BuildTests OFF CACHE INTERNAL "")
 add_subdirectory(libs/json)
-#add_subdirectory(libs/rpi_ws281x)
+add_subdirectory(libs/rpi_ws281x)
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -25,7 +25,7 @@ add_executable(cpp main.cpp
         RouteManager.h)
 
 include_directories(${CURL_INCLUDE_DIR})
-#include_directories(rpi_ws281x)
+include_directories(rpi_ws281x)
 
-#target_link_libraries(cpp ${CURL_LIBRARIES} ws2811 nlohmann_json::nlohmann_json)
-target_link_libraries(cpp ${CURL_LIBRARIES} nlohmann_json::nlohmann_json)
+target_link_libraries(cpp ${CURL_LIBRARIES} ws2811 nlohmann_json::nlohmann_json)
+#target_link_libraries(cpp ${CURL_LIBRARIES} nlohmann_json::nlohmann_json)
