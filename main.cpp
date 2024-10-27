@@ -74,7 +74,10 @@ int main() {
 
             for (auto buss: leds) {
                 ledstring.channel[0].leds[buss.first] = buss.second;
+                std::cerr << buss.first << "=" << buss.second << ", ";
             }
+
+            std::cerr << std::endl;
 
             if ((ret = ws2811_render(&ledstring)) != WS2811_SUCCESS)
             {
@@ -82,7 +85,9 @@ int main() {
                 break;
             }
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
         }
 
 
