@@ -11,10 +11,10 @@
 #include "libs/rpi_ws281x/ws2811.h"
 #include "nlohmann/json.hpp"
 
-ShapeManager sm("shapes.txt");
-TripManager tm("trips.txt");
-RouteManager rm("routes.txt");
-DataUpdater updater(sm, tm, rm);
+// ShapeManager sm("shapes.txt");
+// TripManager tm("trips.txt");
+// RouteManager rm("routes.txt");
+// DataUpdater updater(sm, tm, rm);
 LedManager lm("leds.txt");
 
 int main() {
