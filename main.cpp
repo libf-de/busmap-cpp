@@ -73,7 +73,7 @@ int main() {
             auto leds = lm.getLeds(busses);
 
             for (auto buss: leds) {
-                matrix[buss.first] = buss.second;
+                ledstring.channel[0].leds[buss.first] = buss.second;
             }
 
             if ((ret = ws2811_render(&ledstring)) != WS2811_SUCCESS)
@@ -87,7 +87,7 @@ int main() {
 
 
         // Process data...
-        std::this_thread::sleep_for(std::chrono::seconds(10));
+        // std::this_thread::sleep_for(std::chrono::seconds(10));
     }
 
     return 0;
