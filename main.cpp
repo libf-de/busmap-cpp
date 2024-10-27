@@ -65,7 +65,7 @@ int main() {
         for (int i = 0; i < 100; ++i) {
             std::vector<BusData> busses;
             std::vector<double> distances;
-            distances.push_back(i / 100);
+            distances.push_back(static_cast<float>(i) / 100);
 
             BusData bus("1", "0", 0x00FF0000, distances);
             busses.push_back(bus);
