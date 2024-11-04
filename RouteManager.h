@@ -6,6 +6,7 @@
 #define ROUTEMANAGER_H
 #include <map>
 #include <string>
+#include <cstdint>
 
 
 class RouteManager {

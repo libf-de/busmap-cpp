@@ -12,7 +12,7 @@
 #include <algorithm>
 
 #include "BusData.h"
-
+#include <cstdint>
 
 class LedManager {
     public:

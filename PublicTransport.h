@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <optional>
+#include <cstdint>
 
 struct Stop {
     std::string id;

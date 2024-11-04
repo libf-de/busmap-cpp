@@ -5,6 +5,7 @@
 #ifndef BUSDATA_H
 #define BUSDATA_H
 #include <string>
+#include <cstdint>
 
 struct BusData {
     std::string name;
